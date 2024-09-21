@@ -31,12 +31,28 @@
     /**
     * Get an element by a string contained
     */
-    async function getByText(tag, string) {
+    async function getByText(tag, strings) {
 
         let interval = 100;
 
-        let xpath = `//${tag}[contains(text(), '${string}')]`;
-        console.log(`Searching xpath ${xpath} for string ${string}...`);
+        if (typeof strings === 'string') {
+            strings = [strings];
+        }
+
+        let xpath = "";
+        let xpath_fragment = "";
+        for (let string of strings) {
+            if (!xpath_fragment) {
+                xpath_fragment = `contains(text(), '${string}')`;
+            } else {
+                xpath_fragment = `${xpath_fragment} or contains(text(), '${string}')`;
+            }
+        }
+
+        console.log("XPATH Fragment", xpath_fragment);
+
+        xpath = `//${tag}[${xpath_fragment}]`;
+        console.log(`Searching xpath "${xpath}" for string "${strings}"...`);
         let retval = null;
 
         // Loop until the element is found
@@ -44,7 +60,8 @@
             retval = document.evaluate(xpath, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
 
             if (retval) {
-                console.log(`Element found! - Tag: ${tag}, string: ${string}`);
+                console.log(`Element found! - Tag: ${tag}, string: ${strings}`);
+                //console.log("DEBUG", retval); // Clicking on this in the browser console will highlight the element on the page.
                 return(retval);
             }
 
@@ -58,7 +75,7 @@
 
         let fontSize = 16;
         let width = text.length * 10;
-        console.log(`Set width to ${width} pixels.`);
+        console.log(`Set button width to ${width} pixels for text "${text}".`);
 
         let button = document.createElement('button');
         button.textContent = text;
@@ -104,19 +121,35 @@
 
     }
 
+    /**
+    * Toggle the ability to leave comments.
+    * First click is to turn them off, next click is to turn them back on.
+    */
+    async function commentsToggle() {
+
+        document.querySelector('div[aria-label*="Actions for this post"]').click();
+        console.log("Clicked Actions Button");
+
+        let element = await getByText("span", ["Turn off commenting", "Turn on commenting"]);
+        element.click();
+        console.log("Toggled comments on/off");
+
+    }
+
 
     // Create a button and append it to the page
     function createButton() {
 
         createButtonCore("Give Feedback", 50, giveFeedback);
         createButtonCore("Report Post to Admins", 200, reportPost);
+        createButtonCore("Toggle Comments", 400, commentsToggle);
 
     }
 
     // Run this function to create the button when the page loads
     window.addEventListener('load', createButton);
 
-//    window.go = () => { console.log("DEBUG IN GO"); }
+    //    window.go = () => { console.log("DEBUG IN GO"); }
 
 
     console.log("##### Finished Tampermonkey Script");
