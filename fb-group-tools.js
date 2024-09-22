@@ -137,12 +137,29 @@
     }
 
 
+    /**
+    * Toggle the ability to leave comments.
+    * First click is to turn them off, next click is to turn them back on.
+    */
+    async function postApprovalToggle() {
+
+        document.querySelector('div[aria-label*="Actions for this post"]').click();
+        console.log("Clicked Actions Button");
+
+        let element = await getByText("span", ["Turn on post approval", "Turn off post approval"]);
+        element.click();
+        console.log("Toggled post approval on/off");
+
+    }
+
+
     // Create a button and append it to the page
     function createButton() {
 
         createButtonCore("Give Feedback", 50, giveFeedback);
         createButtonCore("Report Post to Admins", 200, reportPost);
         createButtonCore("Toggle Comments", 400, commentsToggle);
+        createButtonCore("Toggle Post Approval", 575, postApprovalToggle);
 
     }
 
