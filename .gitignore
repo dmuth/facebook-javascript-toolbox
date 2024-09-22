@@ -1,0 +1,9 @@
+
+# Vim
+*.swp
+*~
+
+# Steve Jobs
+.DS_Store
+
+
