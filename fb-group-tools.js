@@ -87,21 +87,14 @@
             button.style.backgroundColor = "#ffff88";
         }
 
-        button.style.position = 'fixed';
-        button.style.top = '10px';
-        button.style.left = `${left}px`;
-        button.style.height = '50px';
-        button.style.width = '${width}px';
-        button.style.zIndex = '1000';
+        button.style.height = "50px";
+        button.style.marginLeft = "25px";
+        button.style.width = "${width}px";
         button.style.fontSize = `${fontSize}px`;
 
         button.addEventListener('click', cb);
 
-//        return(button)
         return(button.outerHTML)
-
-// TEST
-//        document.body.appendChild(button);
 
     } // End of createButtonCore()
 
@@ -186,6 +179,9 @@
     */
     function createButtons() {
 
+        //
+        // First, get the HTML for all our buttons in a string.
+        //
         let buttons = "";
 
         buttons = createButtonCore("Delete Post", 50, deletePost, "danger");
@@ -194,8 +190,16 @@
         buttons += createButtonCore("Report Post to Admins", 500, reportPost);
         buttons += createButtonCore("Toggle Post Approval", 700, postApprovalToggle);
 
+        //
+        // Next, put them all in a div and put the div on top of the page.
+        //
         var wrapper = document.createElement("div");
+        wrapper.style.top = "10px";
+        wrapper.style.zIndex = "1000";
+        wrapper.style.position = 'fixed';
+
         wrapper.innerHTML = buttons;
+
         document.body.appendChild(wrapper);
 
     }
