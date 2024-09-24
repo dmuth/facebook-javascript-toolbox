@@ -94,7 +94,7 @@
 
         button.addEventListener('click', cb);
 
-        return(button.outerHTML)
+        return(button)
 
     } // End of createButtonCore()
 
@@ -182,13 +182,13 @@
         //
         // First, get the HTML for all our buttons in a string.
         //
-        let buttons = "";
+        let buttons = [];
 
-        buttons = createButtonCore("Delete Post", 50, deletePost, "danger");
-        buttons += createButtonCore("Toggle Comments", 175, commentsToggle, "warning");
-        buttons += createButtonCore("Give Feedback", 350, giveFeedback);
-        buttons += createButtonCore("Report Post to Admins", 500, reportPost);
-        buttons += createButtonCore("Toggle Post Approval", 700, postApprovalToggle);
+        buttons.push(createButtonCore("Delete Post", 50, deletePost, "danger"));
+        buttons.push(createButtonCore("Toggle Comments", 175, commentsToggle, "warning"));
+        buttons.push(createButtonCore("Give Feedback", 350, giveFeedback));
+        buttons.push(createButtonCore("Report Post to Admins", 500, reportPost));
+        buttons.push(createButtonCore("Toggle Post Approval", 700, postApprovalToggle));
 
         //
         // Next, put them all in a div and put the div on top of the page.
@@ -198,7 +198,10 @@
         wrapper.style.zIndex = "1000";
         wrapper.style.position = 'fixed';
 
-        wrapper.innerHTML = buttons;
+        let button;
+        for (button of buttons) {
+            wrapper.appendChild(button);
+        }
 
         document.body.appendChild(wrapper);
 
