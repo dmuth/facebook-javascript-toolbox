@@ -71,7 +71,7 @@
     }
 
     // Core function for button creation
-    function createButtonCore(text, left, cb) {
+    function createButtonCore(text, left, cb, style = "") {
 
         let fontSize = 16;
         let width = text.length * 10;
@@ -79,16 +79,29 @@
 
         let button = document.createElement('button');
         button.textContent = text;
+
+        if (style == "danger") {
+            button.style.backgroundColor = "#ff8888";
+
+        } else if (style == "warning") {
+            button.style.backgroundColor = "#ffff88";
+        }
+
         button.style.position = 'fixed';
         button.style.top = '10px';
         button.style.left = `${left}px`;
-        button.style.height = '50px';  // Set the height to 100px
-        button.style.width = '${width}px';   // Optionally set the width
-        button.style.zIndex = '1000'; // Ensure the button is on top of other elements
-        button.style.fontSize = `${fontSize}px`; // Make the font bigger (e.g., 24px)
-        document.body.appendChild(button);
+        button.style.height = '50px';
+        button.style.width = '${width}px';
+        button.style.zIndex = '1000';
+        button.style.fontSize = `${fontSize}px`;
 
         button.addEventListener('click', cb);
+
+//        return(button)
+        return(button.outerHTML)
+
+// TEST
+//        document.body.appendChild(button);
 
     } // End of createButtonCore()
 
@@ -153,23 +166,45 @@
     }
 
 
-    // Create a button and append it to the page
-    function createButton() {
+    /**
+    * Click "actions" and then click "report post".
+    */
+    async function deletePost() {
 
-        createButtonCore("Give Feedback", 50, giveFeedback);
-        createButtonCore("Report Post to Admins", 200, reportPost);
-        createButtonCore("Toggle Comments", 400, commentsToggle);
-        createButtonCore("Toggle Post Approval", 575, postApprovalToggle);
+        document.querySelector('div[aria-label*="Actions for this post"]').click();
+        console.log("Clicked Actions Button");
+
+        let element = await getByText("span", ["Delete post", "Remove post"]);
+        element.click();
+        console.log("Clicked report post button");
+
+    }
+
+
+    /**
+    * Create buttons to put on the page.
+    */
+    function createButtons() {
+
+        let buttons = "";
+
+        buttons = createButtonCore("Delete Post", 50, deletePost, "danger");
+        buttons += createButtonCore("Toggle Comments", 175, commentsToggle, "warning");
+        buttons += createButtonCore("Give Feedback", 350, giveFeedback);
+        buttons += createButtonCore("Report Post to Admins", 500, reportPost);
+        buttons += createButtonCore("Toggle Post Approval", 700, postApprovalToggle);
+
+        var wrapper = document.createElement("div");
+        wrapper.innerHTML = buttons;
+        document.body.appendChild(wrapper);
 
     }
 
     // Run this function to create the button when the page loads
-    window.addEventListener('load', createButton);
+    window.addEventListener('load', createButtons);
 
     //    window.go = () => { console.log("DEBUG IN GO"); }
 
-
     console.log("##### Finished Tampermonkey Script");
-
 
 })();
